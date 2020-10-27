@@ -1,8 +1,13 @@
-import React, { Component } from 'react';
-import ProjetoBase from './components/ProjetoBase/ProjetoBase';
+import React from 'react';
+import * as api from './api/apiService';
 
-export default class App extends Component {
-  render() {
-    return <ProjetoBase />;
-  }
+export default function App() {
+  const testApi = async () => {
+    const result = await api.getAllGrades();
+    console.log(result);
+  };
+
+  testApi();
+
+  return <h1>Olá</h1>;
 }
