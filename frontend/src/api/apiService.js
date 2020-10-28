@@ -55,6 +55,15 @@ async function getAllGrades() {
   grades.forEach((grade) => allGradesTypes.add(grade.type));
   allGradesTypes = Array.from(allGradesTypes);
 
+  let maxId = -1;
+  grades.forEach(({ id }) => {
+    if (id > maxId) {
+      maxId = id;
+    }
+  });
+
+  let nextId = maxId + 1;
+
   const allCombinations = []; //iniciar combinação entre os três
   allStudents.forEach((student) => {
     allSubjects.forEach((subject) => {
@@ -69,8 +78,11 @@ async function getAllGrades() {
     //alunos, disciplina e tipos de notas e verificar se
     //algum deles não está na API
     const hasItem = grades.find((grade) => {
-      grade.subject =
-        subject && grade.student === student && grade.type === type;
+      return (
+        grade.subject === subject &&
+        grade.student === student &&
+        grade.type === type
+      );
     });
 
     if (!hasItem) {
@@ -78,7 +90,7 @@ async function getAllGrades() {
       //e precisa ser gerado um elemento de frontEnd
       grades.push({
         //inserir a nota que falta
-        id: grades.length + 1,
+        id: nextId++,
         student,
         studentLowerCase: student.toLowerCase(),
         subject,
@@ -92,8 +104,55 @@ async function getAllGrades() {
       });
     }
   });
+  //ORDENAÇÃO - a,b porque o sort compara 2 coisas
+  grades.sort((a, b) => a.typeLowerCase.localeCompare(b.typeLowerCase));
+  grades.sort((a, b) => a.subjectLowerCase.localeCompare(b.subjectLowerCase));
+  grades.sort((a, b) => a.studentLowerCase.localeCompare(b.studentLowerCase));
 
-  return allCombinations;
+  return grades;
 }
 
-export { getAllGrades };
+//Função assíncrona insertGrade, que recebe uma nota, grava na API com
+//axios.post e retorna os dados recebidos da API.
+async function insertGrade(grade) {
+  const response = await axios.post(API_URL, grade);
+  return response.data.id;
+}
+
+//Função assíncrona updateGrade, que recebe uma nota, grava na API com
+//axios.put e retorna os dados recebidos da API.
+async function updateGrade(grade) {
+  const response = await axios.put(API_URL, grade);
+  return response.data;
+}
+
+//Função assíncrona deleteGrade, que recebe uma nota, grava na API com
+//axios.delete e retorna os dados recebidos da API.
+async function deleteGrade(grade) {
+  const response = await axios.delete(`${API_URL}/${grade.id}`);
+  return response.data;
+}
+
+//Função getValidationFromGradeType, que recebe um tipo de nota, busca
+//em GRADE_VALIDATION com array.find  e retorna os dados de minValue e
+//maxValue
+async function getValidationFromGradeType(gradeType) {
+  const gradeValidation = GRADE_VALIDATION.find(
+    (item) => item.gradeType === gradeType
+  );
+
+  const { minValue, maxValue } = gradeValidation;
+
+  return {
+    minValue,
+    maxValue,
+  };
+}
+
+export {
+  getAllGrades,
+  insertGrade,
+  updateGrade,
+  deleteGrade,
+  getValidationFromGradeType,
+};
