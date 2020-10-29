@@ -61,7 +61,7 @@ export default function GradesControl({ grades, onDelete, onPersist }) {
               </tr>
             </thead>
             {/* trazer todos os dados para a tabela em tbody, desestruturando
-        em grades.map */}
+        em grades.map para posterior mudanças */}
             <tbody>
               {grades.map(
                 ({ id, subject, student, type, value, isDeleted }) => {
