@@ -39,7 +39,6 @@ export default function App() {
   return (
     <div>
       <h1 className="center">Controle de notas</h1>
-
       {allGrades.length == 0 && <Spinner />}
       {allGrades.length > 0 && (
         <GradesControl
