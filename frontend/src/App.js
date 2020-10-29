@@ -18,7 +18,7 @@ export default function App() {
       const grades = await api.getAllGrades();
       setTimeout(() => {
         setAllGrades(grades);
-      }, 2000);
+      }, 1000);
     };
     // api.getAllGrades().then((grades) => {
     //   setTimeout(() => {
@@ -28,8 +28,19 @@ export default function App() {
     getGrades();
   }, []);
 
-  const handleDelete = () => {
-    console.log('handleDelete');
+  const handleDelete = async (gradeToDelete) => {
+    const isDeleted = await api.deleteGrade(gradeToDelete);
+
+    if (isDeleted) {
+      const deletedGradeIndex = allGrades.findIndex(
+        (grade) => grade.id === gradeToDelete.id
+      );
+
+      const newGrades = Object.assign([], allGrades);
+      newGrades[deletedGradeIndex].isDeleted = true;
+      newGrades[deletedGradeIndex].value = 0;
+      setAllGrades(newGrades);
+    }
   };
 
   const handlePersist = () => {
