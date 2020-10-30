@@ -42,9 +42,19 @@ export default function GradesControl({ grades, onDelete, onPersist }) {
   const handleActionClick = (id, type) => {
     const grade = grades.find((grade) => grade.id === id);
 
+    //Menos comum no mercado
+    //   if (type === 'delete') {
+    //     onDelete(grade);
+    //   } else {
+    //     onPersist(grade);
+    //   }
+    // };
+
     if (type === 'delete') {
       onDelete(grade);
+      return;
     }
+    onPersist(grade);
   };
 
   return (
